@@ -1,0 +1,21 @@
+@page
+@model FerrariHR.Pages.Account.AccessDeniedModel
+@{
+    ViewData["Title"] = "Access denied";
+}
+
+<div class="bg-white shadow-md rounded-lg p-6 max-w-xl">
+    <h1 class="text-2xl font-semibold text-ferrariDark mb-2">Access denied</h1>
+    <p class="text-sm text-gray-700 mb-4">
+        You do not have permission to access this page.
+    </p>
+
+    <div class="flex gap-3">
+        <a asp-page="/Index" class="bg-ferrariRed text-white px-4 py-2 rounded-md hover:bg-red-700">
+            Go to Dashboard
+        </a>
+        <a asp-page="/Account/Login" class="px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-50">
+            Login with another account
+        </a>
+    </div>
+</div>

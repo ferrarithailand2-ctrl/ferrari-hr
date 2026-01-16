@@ -1,0 +1,89 @@
+@page
+@model FerrariHR.Pages.Admin.SalaryConfigModel
+@{
+    ViewData["Title"] = "Salary Configuration";
+}
+
+<h1 class="text-2xl font-semibold text-ferrariDark mt-4 mb-4">
+    Salary configuration (Excel import)
+</h1>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Import panel -->
+    <section class="bg-white shadow-md rounded-lg p-4 lg:col-span-1">
+        <h2 class="text-lg font-semibold text-ferrariDark mb-3">Import from Excel</h2>
+
+        <p class="text-sm text-gray-600 mb-3">
+            Expected columns (starting from row 2):
+        </p>
+        <ul class="list-disc ml-5 text-sm text-gray-600 mb-3">
+            <li><strong>Column A</strong>: Employee Name (must match User name in this system)</li>
+            <li><strong>Column B</strong>: BaseMonthlySalary (e.g. 30000)</li>
+            <li><strong>Column C</strong>: OTRatePerHour (e.g. 150)</li>
+            <li><strong>Column D</strong>: LateDeductionPerMinute (e.g. 5)</li>
+        </ul>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-3">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Excel file (.xlsx)</label>
+                <input type="file" asp-for="UploadFile"
+                       class="mt-1 block w-full text-sm text-gray-700 border border-gray-300 rounded-md cursor-pointer" />
+            </div>
+
+            <button type="submit"
+                    class="bg-ferrariRed text-white px-4 py-2 rounded-md font-semibold hover:bg-red-700 transition">
+                Import
+            </button>
+        </form>
+
+        @if (!string.IsNullOrEmpty(Model.Message))
+        {
+            <div class="mt-3 text-sm">
+                <span class="font-semibold">Result:</span>
+                <span>@Model.Message</span>
+            </div>
+        }
+    </section>
+
+    <!-- Existing configs -->
+    <section class="bg-white shadow-md rounded-lg p-4 lg:col-span-2">
+        <h2 class="text-lg font-semibold text-ferrariDark mb-3">Current salary configuration</h2>
+
+        @if (Model.Items == null || !Model.Items.Any())
+        {
+            <p class="text-sm text-gray-500">No salary configuration found. Import an Excel file to get started.</p>
+        }
+        else
+        {
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">Employee</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">Email</th>
+                            <th class="px-3 py-2 text-right font-medium text-gray-700">Base salary</th>
+                            <th class="px-3 py-2 text-right font-medium text-gray-700">OT rate / hr</th>
+                            <th class="px-3 py-2 text-right font-medium text-gray-700">Late deduction / min</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr class="border-t">
+                            <td class="px-3 py-2">@item.UserName</td>
+                            <td class="px-3 py-2">@item.Email</td>
+                            <td class="px-3 py-2 text-right">@item.BaseMonthlySalary.ToString("N2")</td>
+                            <td class="px-3 py-2 text-right">@item.OvertimeHourlyRate.ToString("N2")</td>
+                            <td class="px-3 py-2 text-right">@item.LateDeductionPerMinute.ToString("N4")</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

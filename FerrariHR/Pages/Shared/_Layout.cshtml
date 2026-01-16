@@ -1,0 +1,161 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - FerrariHR</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="bg-grey-100 min-h-screen">
+<header class="bg-ferrariRed text-white shadow-md">
+    <div class="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
+        <div class="flex items-center gap-2">
+            <span class="font-bold text-xl tracking-wide">Ferrari Food &amp; Wine</span>
+            <span class="text-xs uppercase bg-ferrariDark px-2 py-1 rounded-full">
+                HR / Operations
+            </span>
+        </div>
+
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <div class="flex items-center gap-6 text-sm">
+                <nav class="flex items-center gap-4">
+
+                    <!-- Dashboard -->
+                    <a asp-page="/Index" class="hover:text-ferrariGold">Dashboard</a>
+
+                    <!-- Requests dropdown (all logged-in users) -->
+                    <div class="relative inline-block group">
+                        <button type="button" class="inline-flex items-center gap-1 hover:text-ferrariGold">
+                            Requests <span class="text-xs">▾</span>
+                        </button>
+
+                        <!-- keep NO GAP: top-full only -->
+                        <div class="absolute left-0 top-full hidden group-hover:block hover:block bg-white shadow-lg rounded-md py-1 min-w-[170px] z-20">
+                            <a asp-page="/LeaveRequests/Index" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Leave</a>
+                            <a asp-page="/Overtime/Index"      class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Overtime</a>
+                            <a asp-page="/Late/Index"          class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">Late summary</a>
+                        </div>
+                    </div>
+
+                    <!-- Training -->
+                    <a asp-page="/Training/Index" class="hover:text-ferrariGold">Training</a>
+
+                    <!-- Admin dropdown (Admin + SuperAdmin) -->
+                    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                    {
+                        <div class="relative inline-block group">
+                            <button type="button" class="inline-flex items-center gap-1 hover:text-ferrariGold">
+                                Admin <span class="text-xs">▾</span>
+                            </button>
+
+                            <!-- keep NO GAP: top-full only -->
+                            <div class="absolute left-0 top-full hidden group-hover:block hover:block bg-white shadow-lg rounded-md py-2 min-w-[240px] z-20">
+
+                                @* SuperAdmin: Approvals *@
+                                @if (User.IsInRole("SuperAdmin"))
+                                {
+                                    <div class="px-3 pt-1 pb-1 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
+                                        Approvals
+                                    </div>
+                                    <a asp-page="/Admin/LeaveRequests" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        Leave approvals
+                                    </a>
+                                    <a asp-page="/Admin/OvertimeRequests" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        OT approvals
+                                    </a>
+                                    <div class="my-2 border-t border-gray-200"></div>
+                                }
+
+                                @* Imports: Admin + SuperAdmin (Salary config only for SuperAdmin) *@
+                                <div class="px-3 pt-1 pb-1 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
+                                    Imports
+                                </div>
+                                <a asp-page="/Late/Import" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Import late
+                                </a>
+                                @if (User.IsInRole("SuperAdmin"))
+                                {
+                                    <a asp-page="/Admin/SalaryConfig" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        Salary config
+                                    </a>
+                                }
+                                <div class="my-2 border-t border-gray-200"></div>
+
+                                @* Views: Admin + SuperAdmin (Salary calculation only for SuperAdmin) *@
+                                <div class="px-3 pt-1 pb-1 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
+                                    Views
+                                </div>
+                                <a asp-page="/Admin/LateSummary" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Late summary (all)
+                                </a>
+
+                                @if (User.IsInRole("SuperAdmin"))
+                                {
+                                    <a asp-page="/Admin/Salary" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        Salary calculation
+                                    </a>
+                                }
+
+                                <a asp-page="/Admin/Users" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    User management
+                                </a>
+
+                                <div class="my-2 border-t border-gray-200"></div>
+
+                                @* Reports: Admin + SuperAdmin *@
+                                <div class="px-3 pt-1 pb-1 text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
+                                    Reports
+                                </div>
+                                <a asp-page="/Admin/LeaveReport" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Leave report
+                                </a>
+                                <a asp-page="/Admin/OvertimeReport" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    Overtime report
+                                </a>
+                                @if (User.IsInRole("SuperAdmin"))
+                                {
+                                    <a asp-page="/Admin/SalaryReport" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        Salary report
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    }
+                </nav>
+
+                <div class="flex items-center gap-3 text-xs">
+                    <span>@User.Identity.Name</span>
+                    <form method="post" asp-page="/Account/Logout">
+                        <button class="bg-ferrariDark px-3 py-1 rounded-md">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <nav class="flex items-center gap-4 text-sm">
+                <a asp-page="/Account/Login" class="hover:text-ferrariGold">Login</a>
+            </nav>
+        }
+    </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 py-6">
+    @RenderBody()
+</main>
+
+<footer class="border-t mt-8">
+    <div class="max-w-6xl mx-auto px-4 py-4 text-xs text-gray-500 flex justify-between">
+        <span>Ferrari Food &amp; Wine Thailand · Internal HR System</span>
+        <span>Built with ASP.NET Core + Tailwind</span>
+    </div>
+</footer>
+
+@RenderSection("Scripts", required: false)
+</body>
+</html>

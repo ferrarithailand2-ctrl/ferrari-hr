@@ -1,0 +1,54 @@
+@page
+@model FerrariHR.Pages.Late.ImportModel
+@{
+    ViewData["Title"] = "Import Late Arrivals (Monthly Summary)";
+}
+
+<h1 class="text-2xl font-semibold text-ferrariDark mt-4 mb-4">
+    Import late arrivals (monthly summary)
+</h1>
+
+<div class="max-w-lg bg-white shadow-md rounded-lg p-4">
+    <p class="text-sm text-gray-600 mb-3">
+        Upload an Excel file (.xlsx) matching the monthly HR report structure:
+    </p>
+    <ul class="text-sm text-gray-600 list-disc list-inside mb-3">
+        <li><strong>Column A:</strong> Employee Name</li>
+        <li><strong>Column B:</strong> Employee ID (ignored)</li>
+        <li><strong>Column C:</strong> Work Days</li>
+        <li><strong>Column D:</strong> Late Days</li>
+        <li><strong>Column E:</strong> Total Late (Minutes)</li>
+        <li><strong>Column F:</strong> Total Late (Hours) (ignored)</li>
+    </ul>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-3">
+        <div class="flex gap-3">
+            <div>
+                <label asp-for="Year" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="Year" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+            </div>
+
+            <div>
+                <label asp-for="Month" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="Month" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+            </div>
+        </div>
+
+        <div>
+            <input asp-for="UploadFile" type="file"
+                   class="block w-full text-sm text-gray-700" />
+        </div>
+
+        <button type="submit"
+                class="bg-ferrariRed text-white px-4 py-2 rounded-md font-semibold hover:bg-red-700 transition">
+            Upload and import
+        </button>
+    </form>
+
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="mt-4 text-sm text-gray-700">
+            @Model.Message
+        </div>
+    }
+</div>

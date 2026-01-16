@@ -1,0 +1,123 @@
+﻿@page
+@model FerrariHR.Pages.Training.IndexModel
+@{
+    ViewData["Title"] = "Training";
+}
+
+<h1 class="text-2xl font-semibold text-ferrariDark mb-4">Training materials</h1>
+
+@if (!ViewContext.ModelState.IsValid)
+{
+    <div class="bg-red-50 border border-red-200 text-red-700 p-3 rounded-md mb-4 text-sm">
+        Please fix the errors and try again.
+    </div>
+}
+
+@if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+{
+    <section class="bg-white shadow-md rounded-lg p-4 mb-6">
+        <h2 class="text-lg font-semibold text-gray-800 mb-3">Add new material</h2>
+
+        <form method="post" asp-page-handler="Create" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Title</label>
+                <input asp-for="Input.Title" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">URL</label>
+                <input asp-for="Input.OneDriveUrl" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Description (optional)</label>
+                <input asp-for="Input.Description" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+            </div>
+
+            <div class="md:col-span-3">
+                <button class="bg-ferrariRed text-white px-4 py-2 rounded-md hover:bg-red-700">
+                    Add
+                </button>
+            </div>
+        </form>
+    </section>
+}
+
+<section class="bg-white shadow-md rounded-lg overflow-hidden">
+    <div class="px-4 py-3 border-b">
+        <h2 class="text-lg font-semibold text-gray-800">All materials</h2>
+    </div>
+
+    <div class="divide-y">
+        @foreach (var item in Model.Items)
+        {
+            var isEditing = (Model.EditId.HasValue && Model.EditId.Value == item.Id);
+
+            <div class="p-4">
+                @if (isEditing && (User.IsInRole("Admin") || User.IsInRole("SuperAdmin")))
+                {
+                    <form method="post" asp-page-handler="Update" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input type="hidden" asp-for="Edit.Id" />
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Title</label>
+                            <input asp-for="Edit.Title" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">URL</label>
+                            <input asp-for="Edit.OneDriveUrl" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Description</label>
+                            <input asp-for="Edit.Description" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" />
+                        </div>
+
+                        <div class="md:col-span-3 flex gap-2">
+                            <button class="bg-ferrariRed text-white px-4 py-2 rounded-md hover:bg-red-700">
+                                Save
+                            </button>
+                            <a asp-page="./Index" asp-page-handler="CancelEdit"
+                               class="px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-50">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                }
+                else
+                {
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <div class="font-semibold text-gray-900">@item.Title</div>
+                            @if (!string.IsNullOrWhiteSpace(item.Description))
+                            {
+                                <div class="text-sm text-gray-600 mt-1">@item.Description</div>
+                            }
+                            <a href="@item.OneDriveUrl" target="_blank" class="text-sm text-ferrariRed hover:underline mt-2 inline-block">
+                                Open material →
+                            </a>
+                        </div>
+
+                        @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                        {
+                            <div class="flex items-center gap-2">
+                                <a asp-page="./Index" asp-page-handler="Edit" asp-route-id="@item.Id"
+                                   class="px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50 text-sm">
+                                    Edit
+                                </a>
+
+                                <form method="post" asp-page-handler="Delete" asp-route-id="@item.Id"
+                                      onsubmit="return confirm('Delete this training material?');">
+                                    <button class="px-3 py-1 rounded-md border border-red-300 text-red-700 hover:bg-red-50 text-sm">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>

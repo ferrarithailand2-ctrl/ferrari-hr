@@ -1,0 +1,50 @@
+@page
+@model FerrariHR.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="max-w-md mx-auto mt-10 bg-white shadow-md rounded-lg p-6">
+    <h1 class="text-2xl font-semibold mb-4 text-ferrariDark">Sign in</h1>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="mb-4 px-3 py-2 rounded bg-red-100 text-red-700 text-sm">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <form method="post" class="space-y-4">
+        <div>
+            <label asp-for="Input.Email" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="Input.Email" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-ferrariRed focus:border-ferrariRed" />
+            <span asp-validation-for="Input.Email" class="text-xs text-red-600"></span>
+        </div>
+
+        <div>
+            <label asp-for="Input.Password" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="Input.Password" type="password" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-ferrariRed focus:border-ferrariRed" />
+            <span asp-validation-for="Input.Password" class="text-xs text-red-600"></span>
+        </div>
+
+        <div class="flex items-center">
+            <input asp-for="Input.RememberMe" class="h-4 w-4 text-ferrariRed border-gray-300 rounded" />
+            <label asp-for="Input.RememberMe" class="ml-2 block text-sm text-gray-700"></label>
+        </div>
+
+        <button type="submit"
+                class="w-full bg-ferrariRed text-white py-2 rounded-md font-semibold hover:bg-red-700 transition">
+            Sign in
+        </button>
+    </form>
+
+    <p class="mt-4 text-xs text-gray-500">
+        Use the SuperAdmin account for now:<br />
+        <strong>Email:</strong> superadmin@ferrarith.com<br />
+        <strong>Password:</strong> Ferrari123!
+    </p>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

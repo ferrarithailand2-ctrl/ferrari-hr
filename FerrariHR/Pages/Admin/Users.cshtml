@@ -1,0 +1,149 @@
+﻿@page
+@model FerrariHR.Pages.Admin.UsersModel
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<h1 class="text-2xl font-semibold text-ferrariDark mt-4 mb-4">
+    User management
+</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- User list -->
+    <section class="md:col-span-2 bg-white shadow-md rounded-lg p-4">
+        <h2 class="text-lg font-semibold text-ferrariDark mb-3">Existing users</h2>
+
+        @if (Model.Users == null || !Model.Users.Any())
+        {
+            <p class="text-sm text-gray-500">No users found.</p>
+        }
+        else
+        {
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">User name</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">Email</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">Roles</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var u in Model.Users)
+                    {
+                        var isSuperAdmin = u.Roles.Contains("SuperAdmin");
+                        <tr class="border-t">
+                            <td class="px-3 py-2">@u.UserName</td>
+                            <td class="px-3 py-2">@u.Email</td>
+                            <td class="px-3 py-2">
+                                @if (!u.Roles.Any())
+                                {
+                                    <span class="text-xs text-gray-400">None</span>
+                                }
+                                else
+                                {
+                                    foreach (var r in u.Roles)
+                                    {
+                                        <span class="inline-flex items-center px-2 py-0.5 mr-1 rounded-full text-xs bg-gray-100 text-gray-700">
+                                            @r
+                                        </span>
+                                    }
+                                }
+                            </td>
+                            <td class="px-3 py-2">
+                                @if (isSuperAdmin)
+                                {
+                                    <span class="text-xs text-gray-400">SuperAdmin</span>
+                                }
+                                else
+                                {
+                                    <div class="flex flex-wrap gap-2">
+                                        <!-- Edit -->
+                                        <a asp-page="/Admin/EditUser"
+                                           asp-route-id="@u.Id"
+                                           class="px-2 py-1 text-xs rounded border border-gray-300 hover:bg-gray-100">
+                                            Edit
+                                        </a>
+
+                                        <!-- Toggle Admin -->
+                                        <form method="post" asp-page-handler="ToggleAdmin">
+                                            <input type="hidden" name="userId" value="@u.Id" />
+                                            <button type="submit"
+                                                    class="px-2 py-1 text-xs rounded border border-gray-300 hover:bg-gray-100">
+                                                @(u.Roles.Contains("Admin") ? "Remove Admin" : "Make Admin")
+                                            </button>
+                                        </form>
+
+                                        <!-- Delete -->
+                                        <form method="post" asp-page-handler="Delete"
+                                              onsubmit="return confirm('Delete this user? This cannot be undone.');">
+                                            <input type="hidden" name="userId" value="@u.Id" />
+                                            <button type="submit"
+                                                    class="px-2 py-1 text-xs rounded border border-red-300 text-red-700 hover:bg-red-50">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+
+    <!-- Create user -->
+    <section class="md:col-span-1 bg-white shadow-md rounded-lg p-4">
+        <h2 class="text-lg font-semibold text-ferrariDark mb-3">Create new user</h2>
+
+        <form method="post" asp-page-handler="Create" class="space-y-3">
+            <div>
+                <label asp-for="NewUser.UserName" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="NewUser.UserName"
+                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-ferrariRed focus:border-ferrariRed" />
+                <span asp-validation-for="NewUser.UserName" class="text-xs text-red-600"></span>
+            </div>
+
+            <div>
+                <label asp-for="NewUser.Email" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="NewUser.Email"
+                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-ferrariRed focus:border-ferrariRed" />
+                <span asp-validation-for="NewUser.Email" class="text-xs text-red-600"></span>
+            </div>
+
+            <div>
+                <label asp-for="NewUser.Password" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="NewUser.Password"
+                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-ferrariRed focus:border-ferrariRed" />
+                <span asp-validation-for="NewUser.Password" class="text-xs text-red-600"></span>
+            </div>
+
+            <div>
+                <label asp-for="NewUser.Role" class="block text-sm font-medium text-gray-700"></label>
+                <select asp-for="NewUser.Role"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-ferrariRed focus:border-ferrariRed">
+                    <option value="Employee">Employee</option>
+                    <option value="Admin">Admin</option>
+                </select>
+                <span asp-validation-for="NewUser.Role" class="text-xs text-red-600"></span>
+            </div>
+
+            <button type="submit"
+                    class="w-full bg-ferrariRed text-white py-2 rounded-md font-semibold hover:bg-red-700 transition">
+                Create user
+            </button>
+        </form>
+
+        <div class="mt-3 text-xs text-gray-500">
+            Tip: set <strong>User name</strong> to match the “Employee Name” used in the HR Excel,
+            so late/leave/salary can be linked easily.
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

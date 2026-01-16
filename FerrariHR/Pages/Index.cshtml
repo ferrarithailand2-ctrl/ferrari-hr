@@ -1,0 +1,150 @@
+﻿@page
+@model FerrariHR.Pages.IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h1 class="text-2xl font-semibold text-ferrariDark mb-4">
+    Dashboard
+</h1>
+
+<p class="text-sm text-gray-600 mb-6">
+    Welcome, <span class="font-semibold">@Model.DisplayName</span>
+</p>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+    <!-- My Leave -->
+    <div class="bg-white rounded-lg shadow-md p-4">
+        <div class="text-sm font-semibold text-gray-700 mb-2">My Leave</div>
+        <div class="text-2xl font-bold">@Model.MyLeavePending</div>
+        <div class="text-xs text-gray-500 mb-3">Pending</div>
+
+        <div class="text-xs text-gray-600 flex gap-4">
+            <span>Approved: <span class="font-semibold">@Model.MyLeaveApproved</span></span>
+            <span>Rejected: <span class="font-semibold">@Model.MyLeaveRejected</span></span>
+        </div>
+
+        <a asp-page="/LeaveRequests/Index"
+           class="inline-block mt-3 text-sm text-ferrariRed hover:underline">
+            Open leave requests →
+        </a>
+    </div>
+
+    <!-- My OT -->
+    <div class="bg-white rounded-lg shadow-md p-4">
+        <div class="text-sm font-semibold text-gray-700 mb-2">My Overtime</div>
+        <div class="text-2xl font-bold">@Model.MyOtPending</div>
+        <div class="text-xs text-gray-500 mb-3">Pending</div>
+
+        <div class="text-xs text-gray-600 flex gap-4">
+            <span>Approved: <span class="font-semibold">@Model.MyOtApproved</span></span>
+            <span>Rejected: <span class="font-semibold">@Model.MyOtRejected</span></span>
+        </div>
+
+        <a asp-page="/Overtime/Index"
+           class="inline-block mt-3 text-sm text-ferrariRed hover:underline">
+            Open overtime requests →
+        </a>
+    </div>
+
+    <!-- My Late -->
+    <div class="bg-white rounded-lg shadow-md p-4">
+        <div class="text-sm font-semibold text-gray-700 mb-2">My Late (this month)</div>
+        <div class="text-2xl font-bold">@Model.MyLateMinutesThisMonth</div>
+        <div class="text-xs text-gray-500 mb-3">Total late minutes</div>
+
+        <div class="text-xs text-gray-600">
+            Late days: <span class="font-semibold">@Model.MyLateDaysThisMonth</span>
+        </div>
+
+        <a asp-page="/Late/Index"
+           class="inline-block mt-3 text-sm text-ferrariRed hover:underline">
+            Open late summary →
+        </a>
+    </div>
+
+</div>
+
+@if (User.IsInRole("SuperAdmin"))
+{
+    <h2 class="text-lg font-semibold text-ferrariDark mt-8 mb-3">SuperAdmin</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <div class="text-sm font-semibold text-gray-700 mb-2">Pending Leave Approvals</div>
+            <div class="text-2xl font-bold">@Model.AllLeavePending</div>
+            <a asp-page="/Admin/LeaveRequests"
+               class="inline-block mt-3 text-sm text-ferrariRed hover:underline">
+                Review →
+            </a>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <div class="text-sm font-semibold text-gray-700 mb-2">Pending OT Approvals</div>
+            <div class="text-2xl font-bold">@Model.AllOtPending</div>
+            <a asp-page="/Admin/OvertimeRequests"
+               class="inline-block mt-3 text-sm text-ferrariRed hover:underline">
+                Review →
+            </a>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <div class="text-sm font-semibold text-gray-700 mb-2">Salary</div>
+            <div class="text-xs text-gray-600 mb-3">
+                Configure rates and calculate monthly salary.
+            </div>
+            <a asp-page="/Admin/SalaryConfig"
+               class="block text-sm text-ferrariRed hover:underline">
+                Salary config →
+            </a>
+            <a asp-page="/Admin/Salary"
+               class="block text-sm text-ferrariRed hover:underline mt-1">
+                Salary calculation →
+            </a>
+        </div>
+    </div>
+}
+
+@if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+{
+    <h2 class="text-lg font-semibold text-ferrariDark mt-8 mb-3">Admin</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <div class="text-sm font-semibold text-gray-700 mb-2">Late import coverage (this month)</div>
+            <div class="text-2xl font-bold">@Model.LateImportedUsersThisMonth</div>
+            <div class="text-xs text-gray-500 mb-3">Monthly summaries imported</div>
+
+            <a asp-page="/Late/Import"
+               class="inline-block mt-3 text-sm text-ferrariRed hover:underline">
+                Import late →
+            </a>
+            <a asp-page="/Admin/LateSummary"
+               class="inline-block mt-3 ml-4 text-sm text-ferrariRed hover:underline">
+                View summary →
+            </a>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <div class="text-sm font-semibold text-gray-700 mb-2">Reports</div>
+            <a asp-page="/Admin/LeaveReport"
+               class="block text-sm text-ferrariRed hover:underline">
+                Leave report →
+            </a>
+            <a asp-page="/Admin/OvertimeReport"
+               class="block text-sm text-ferrariRed hover:underline mt-1">
+                Overtime report →
+            </a>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <div class="text-sm font-semibold text-gray-700 mb-2">Users</div>
+            <div class="text-xs text-gray-600 mb-3">Create and manage employee accounts.</div>
+            <a asp-page="/Admin/Users"
+               class="block text-sm text-ferrariRed hover:underline">
+                User management →
+            </a>
+        </div>
+    </div>
+}

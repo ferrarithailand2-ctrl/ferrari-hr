@@ -1,0 +1,83 @@
+@page
+@model FerrariHR.Pages.Admin.OvertimeRequestsModel
+@{
+    ViewData["Title"] = "Manage Overtime Requests";
+}
+
+<h1 class="text-2xl font-semibold text-ferrariDark mt-4 mb-4">Manage overtime requests</h1>
+
+@if (Model.Requests == null || !Model.Requests.Any())
+{
+    <p class="text-sm text-gray-500">No overtime requests found.</p>
+}
+else
+{
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <table class="min-w-full text-sm">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-3 py-2 text-left font-medium text-gray-700">Employee</th>
+                    <th class="px-3 py-2 text-left font-medium text-gray-700">Date</th>
+                    <th class="px-3 py-2 text-left font-medium text-gray-700">Hours</th>
+                    <th class="px-3 py-2 text-left font-medium text-gray-700">Reason</th>
+                    <th class="px-3 py-2 text-left font-medium text-gray-700">Status</th>
+                    <th class="px-3 py-2 text-left font-medium text-gray-700">Decision</th>
+                    <th class="px-3 py-2 text-left font-medium text-gray-700">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Requests)
+            {
+                var r = item.Request;
+                <tr class="border-t">
+                    <td class="px-3 py-2">@item.EmployeeEmail</td>
+                    <td class="px-3 py-2">@r.Date.ToString("yyyy-MM-dd")</td>
+                    <td class="px-3 py-2">@r.Hours</td>
+                    <td class="px-3 py-2 max-w-xs truncate" title="@r.Reason">@r.Reason</td>
+                    <td class="px-3 py-2">
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs
+                            @(r.Status == "Pending" ? "bg-yellow-100 text-yellow-800" :
+                              r.Status == "Approved" ? "bg-green-100 text-green-800" :
+                              "bg-red-100 text-red-800")">
+                            @r.Status
+                        </span>
+                    </td>
+                    <td class="px-3 py-2 text-xs text-gray-500">
+                        @if (r.DecisionAt.HasValue)
+                        {
+                            @r.DecisionAt.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm")
+                        }
+                        else
+                        {
+                            <span>–</span>
+                        }
+                    </td>
+                    <td class="px-3 py-2">
+                        @if (r.Status == "Pending")
+                        {
+                            <div class="flex gap-2">
+                                <form method="post" asp-page-handler="Approve">
+                                    <input type="hidden" name="id" value="@r.Id" />
+                                    <button class="px-2 py-1 text-xs rounded bg-green-600 text-white hover:bg-green-700">
+                                        Approve
+                                    </button>
+                                </form>
+                                <form method="post" asp-page-handler="Reject">
+                                    <input type="hidden" name="id" value="@r.Id" />
+                                    <button class="px-2 py-1 text-xs rounded bg-red-600 text-white hover:bg-red-700">
+                                        Reject
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                        else
+                        {
+                            <span class="text-xs text-gray-400">No actions</span>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

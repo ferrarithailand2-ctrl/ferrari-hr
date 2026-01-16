@@ -1,0 +1,29 @@
+# .NET build artifacts
+**/bin/
+**/obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS / VS Code
+.vs/
+.vscode/
+
+# Node / Tailwind
+node_modules/
+npm-debug.log*
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Local DB files
+*.db
+
+# Secrets (if you add them later)
+appsettings.Development.Local.json
+appsettings.Production.json

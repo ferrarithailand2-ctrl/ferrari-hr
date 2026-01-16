@@ -1,0 +1,48 @@
+@page
+@model FerrariHR.Pages.Late.IndexModel
+@{
+    ViewData["Title"] = "My Late Arrivals (Monthly Summary)";
+}
+
+<h1 class="text-2xl font-semibold text-ferrariDark mt-4 mb-4">
+    My late arrivals (monthly summary)
+</h1>
+
+@if (Model.MyLateRecords == null || !Model.MyLateRecords.Any())
+{
+    <p class="text-sm text-gray-500">No late records found.</p>
+}
+else
+{
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+        <table class="min-w-full text-sm">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-3 py-2 text-left font-medium text-gray-700">Year</th>
+                    <th class="px-3 py-2 text-left font-medium text-gray-700">Month</th>
+                    <th class="px-3 py-2 text-left font-medium text-gray-700">Work days</th>
+                    <th class="px-3 py-2 text-left font-medium text-gray-700">Late days</th>
+                    <th class="px-3 py-2 text-left font-medium text-gray-700">Total late (minutes)</th>
+                    <th class="px-3 py-2 text-left font-medium text-gray-700">Total late (hours)</th>
+                    <th class="px-3 py-2 text-left font-medium text-gray-700">Imported</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.MyLateRecords)
+            {
+                <tr class="border-t">
+                    <td class="px-3 py-2">@item.Year</td>
+                    <td class="px-3 py-2">@item.Month</td>
+                    <td class="px-3 py-2">@item.WorkDays</td>
+                    <td class="px-3 py-2">@item.LateDays</td>
+                    <td class="px-3 py-2">@item.TotalLateMinutes</td>
+                    <td class="px-3 py-2">@item.TotalLateHours</td>
+                    <td class="px-3 py-2 text-gray-500">
+                        @item.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

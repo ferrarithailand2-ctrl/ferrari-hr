@@ -1,0 +1,104 @@
+@page
+@model FerrariHR.Pages.LeaveRequests.IndexModel
+@{
+    ViewData["Title"] = "My Leave Requests";
+}
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+    <section class="md:col-span-1 bg-white shadow-md rounded-lg p-4">
+        <h2 class="text-lg font-semibold text-ferrariDark mb-3">New leave request</h2>
+
+        <form method="post" class="space-y-3">
+            <div>
+                <label asp-for="Input.StartDate" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="Input.StartDate"
+                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-ferrariRed focus:border-ferrariRed" />
+                <span asp-validation-for="Input.StartDate" class="text-xs text-red-600"></span>
+            </div>
+
+            <div>
+                <label asp-for="Input.EndDate" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="Input.EndDate"
+                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-ferrariRed focus:border-ferrariRed" />
+                <span asp-validation-for="Input.EndDate" class="text-xs text-red-600"></span>
+            </div>
+
+            <div>
+                <label asp-for="Input.Type" class="block text-sm font-medium text-gray-700"></label>
+                <select asp-for="Input.Type"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-ferrariRed focus:border-ferrariRed">
+                    <option>Annual</option>
+                    <option>Sick</option>
+                    <option>Personal</option>
+                    <option>Unpaid</option>
+                </select>
+                <span asp-validation-for="Input.Type" class="text-xs text-red-600"></span>
+            </div>
+
+            <div>
+                <label asp-for="Input.Reason" class="block text-sm font-medium text-gray-700"></label>
+                <textarea asp-for="Input.Reason"
+                          rows="3"
+                          class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-ferrariRed focus:border-ferrariRed"></textarea>
+                <span asp-validation-for="Input.Reason" class="text-xs text-red-600"></span>
+            </div>
+
+            <button type="submit"
+                    class="w-full bg-ferrariRed text-white py-2 rounded-md font-semibold hover:bg-red-700 transition">
+                Submit request
+            </button>
+        </form>
+    </section>
+
+    <section class="md:col-span-2">
+        <h2 class="text-lg font-semibold text-ferrariDark mb-3">My requests</h2>
+
+        @if (Model.MyRequests == null || !Model.MyRequests.Any())
+        {
+            <p class="text-sm text-gray-500">No leave requests yet.</p>
+        }
+        else
+        {
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <table class="min-w-full text-sm">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">Dates</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">Type</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">Reason</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">Status</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model.MyRequests)
+                    {
+                        <tr class="border-t">
+                            <td class="px-3 py-2">
+                                @item.StartDate.ToString("yyyy-MM-dd") – @item.EndDate.ToString("yyyy-MM-dd")
+                            </td>
+                            <td class="px-3 py-2">@item.Type</td>
+                            <td class="px-3 py-2 max-w-xs truncate" title="@item.Reason">@item.Reason</td>
+                            <td class="px-3 py-2">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs
+                                    @(item.Status == "Pending" ? "bg-yellow-100 text-yellow-800" :
+                                      item.Status == "Approved" ? "bg-green-100 text-green-800" :
+                                      "bg-red-100 text-red-800")">
+                                    @item.Status
+                                </span>
+                            </td>
+                            <td class="px-3 py-2 text-gray-500">
+                                @item.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
