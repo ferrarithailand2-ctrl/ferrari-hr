@@ -12,6 +12,9 @@
     <form method="post" class="space-y-4">
         <input type="hidden" asp-for="Input.Id" />
 
+        <!-- ADDED: To show password validation errors! -->
+        <div asp-validation-summary="All" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm"></div>
+
         <div>
             <label asp-for="Input.UserName" class="block text-sm font-medium text-gray-700"></label>
             <input asp-for="Input.UserName"
@@ -41,6 +44,17 @@
             <input asp-for="Input.ConfirmPassword"
                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-ferrariRed focus:border-ferrariRed" />
             <span asp-validation-for="Input.ConfirmPassword" class="text-xs text-red-600"></span>
+        </div>
+
+        <!-- ADDED: Password requirements hint -->
+        <div class="text-xs text-gray-500 bg-gray-50 p-3 rounded-md">
+            <strong>Password requirements:</strong>
+            <ul class="list-disc list-inside mt-1">
+                <li>At least 6 characters</li>
+                <li>At least one uppercase letter (A-Z)</li>
+                <li>At least one lowercase letter (a-z)</li>
+                <li>At least one number (0-9)</li>
+            </ul>
         </div>
 
         <div class="flex gap-2">

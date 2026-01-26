@@ -100,6 +100,10 @@
         <h2 class="text-lg font-semibold text-ferrariDark mb-3">Create new user</h2>
 
         <form method="post" asp-page-handler="Create" class="space-y-3">
+            
+            <!-- ADDED: To show password validation errors! -->
+            <div asp-validation-summary="All" class="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-md text-xs"></div>
+
             <div>
                 <label asp-for="NewUser.UserName" class="block text-sm font-medium text-gray-700"></label>
                 <input asp-for="NewUser.UserName"
@@ -129,6 +133,11 @@
                     <option value="Admin">Admin</option>
                 </select>
                 <span asp-validation-for="NewUser.Role" class="text-xs text-red-600"></span>
+            </div>
+
+            <!-- ADDED:Password requirements hint -->
+            <div class="text-xs text-gray-500 bg-gray-50 p-2 rounded-md">
+                <strong>Password must have:</strong> 6+ chars, uppercase, lowercase, number
             </div>
 
             <button type="submit"
